@@ -7,7 +7,6 @@ generator client {
 }
 
 // --- Enumerations ---
-
 enum Role {
   USER
   AGENT
@@ -30,7 +29,6 @@ enum TicketPriority {
 }
 
 // --- Models ---
-
 model User {
   id              String       @id @default(uuid())
   name            String
@@ -47,12 +45,34 @@ model User {
   messages        Message[]
 }
 
+model Department {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  users    User[]
+  tickets  Ticket[]
+  services Service[] 
+}
+
+model Service {
+  id           String     @id @default(uuid())
+  name         String     
+  tickets      Ticket[]
+
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([name, departmentId]) 
+}
+
 model Ticket {
   id           String         @id @default(uuid())
   title        String
   description  String         @db.Text
   status       TicketStatus   @default(OPEN)
   priority     TicketPriority @default(LOW)
+  
+  tags         String[]       
+
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
@@ -65,11 +85,10 @@ model Ticket {
   departmentId String
   department   Department     @relation(fields: [departmentId], references: [id])
 
-  categoryId   String
-  category     Category       @relation(fields: [categoryId], references: [id])
+  serviceId    String
+  service      Service        @relation(fields: [serviceId], references: [id])
 
   messages     Message[]
-  tags         Tag[]          @relation("TicketTags")
 }
 
 model Message {
@@ -82,24 +101,4 @@ model Message {
 
   senderId  String
   sender    User     @relation(fields: [senderId], references: [id])
-}
-
-model Department {
-  id       String   @id @default(uuid())
-  name     String   @unique
-  users    User[]
-  tickets  Ticket[]
-}
-
-model Category {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?  @db.Text
-  tickets     Ticket[]
-}
-
-model Tag {
-  id      String   @id @default(uuid())
-  name    String   @unique
-  tickets Ticket[] @relation("TicketTags")
 }
