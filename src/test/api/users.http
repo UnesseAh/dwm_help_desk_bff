@@ -1,0 +1,23 @@
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+Authorization: Bearer <token>
+{
+    "user" : {
+        "name" : "user2",
+        "password": "123456",
+        "email": "user2@mail.com"
+    }
+}
+
+
+
+### 
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+    "user" : {
+        "name" : "user1",
+        "password": "123456"
+    }
+}
