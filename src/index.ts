@@ -1,12 +1,21 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import userRouter from "./routes/usersRoutes";
+import { authErrorHandler, generateErrorHandler, prismaErrorHandler } from "./errorHandling";
+
 
 dotenv.config();
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+/** Users Routes */
+app.use("/api/users", userRouter);
+
+app.use(authErrorHandler, prismaErrorHandler, generateErrorHandler);
 
 const PORT = process.env.PORT || 5000;
 
