@@ -1,6 +1,8 @@
+@userToken = token
+
 POST http://localhost:3000/api/users/register
 Content-Type: application/json
-Authorization: Bearer <token>
+Authorization: Bearer {{userToken}}
 {
     "user" : {
         "name" : "user2",
