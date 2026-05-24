@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ValidationError } from "../utils/types";
+import { ValidationError } from "../../utils/types";
 
 export default async function userRegisterValidator(req: Request, res: Response, next: NextFunction) {
     const errors: ValidationError = {};
