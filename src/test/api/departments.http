@@ -1,0 +1,40 @@
+@userToken = token
+
+GET http://localhost:3000/api/departments/
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+###
+GET http://localhost:3000/api/departments/20619c3c-943e-481d-a3eb-4823c84d1b79
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### 
+POST http://localhost:3000/api/departments/
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+    "department" : {
+        "name" : "Developpment"
+    }
+}
+
+
+### 
+PUT http://localhost:3000/api/departments/
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+{
+    "department" : {
+        "id" : "20619c3c-943e-481d-a3eb-4823c84d1b79",
+        "info" : {
+            "name" : "Developpment IT"
+        }
+    }
+}
+
+###
+DELETE http://localhost:3000/api/departments/20619c3c-943e-481d-a3eb-4823c84d1b79
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+

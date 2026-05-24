@@ -1,7 +1,7 @@
 import {userLogin, userRegister}  from "../controllers/userController";
 import Router from "express";
 import authorize from "../middleware/auth/authorize";
-import { userLoginValidator, userRegisterValidator } from "../userValidator";
+import { userLoginValidator, userRegisterValidator } from "../middleware/userValidator";
 
 const router = Router();
 
