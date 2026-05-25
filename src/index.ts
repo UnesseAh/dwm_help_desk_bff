@@ -8,6 +8,9 @@ import { authErrorHandler, generateErrorHandler, prismaErrorHandler } from "./er
 
 dotenv.config();
 
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
 const app = express();
 app.use(cors());

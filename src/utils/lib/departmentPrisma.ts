@@ -5,7 +5,7 @@ interface UpdateFields {
     name?: string;
 }
 
-export async function getDepartmentByIdPrisma(id: string) {
+export async function getDepartmentByIdPrisma(id: number) {
     if (!id) return null;
     const department = await prisma.department.findUnique({
         where: { id },
@@ -31,7 +31,7 @@ export async function createDepartmentPrisma(name: string){
     return department;
 }
 
-export async function updateDepartmentPrisma(id:string, info: UpdateFields){
+export async function updateDepartmentPrisma(id:number, info: UpdateFields){
     const department = await prisma.department.update({
         where: {id},
         data: info
@@ -39,7 +39,7 @@ export async function updateDepartmentPrisma(id:string, info: UpdateFields){
     return department;
 }
 
-export async function deleteDepartmentPrisma(id: string){
+export async function deleteDepartmentPrisma(id: number){
     const department = await getDepartmentByIdPrisma(id);
     if(department?.services.length == 0){
         await prisma.department.delete({where: {id}});
