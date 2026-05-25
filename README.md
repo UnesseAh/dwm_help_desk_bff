@@ -47,6 +47,7 @@ Once the database is created, run the following commands in your terminal to app
 
 ```bash
 # Push the Prisma schema to your database
+npx prisma generate
 npx prisma db push
 
 # Run the seeder to populate default departments and services
