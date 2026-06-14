@@ -1,10 +1,10 @@
-@userToken = token
-
-GET http://localhost:3000/api/departments/
+@userToken = <token>
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
+
+
 ###
-GET http://localhost:3000/api/departments/20619c3c-943e-481d-a3eb-4823c84d1b79
+GET http://localhost:3000/api/departments/1
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
@@ -24,9 +24,10 @@ Authorization: Bearer {{userToken}}
 PUT http://localhost:3000/api/departments/
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
+
 {
     "department" : {
-        "id" : "20619c3c-943e-481d-a3eb-4823c84d1b79",
+        "id" : "1",
         "info" : {
             "name" : "Developpment IT"
         }
@@ -34,7 +35,7 @@ Authorization: Bearer {{userToken}}
 }
 
 ###
-DELETE http://localhost:3000/api/departments/20619c3c-943e-481d-a3eb-4823c84d1b79
+DELETE http://localhost:3000/api/departments/1
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
 

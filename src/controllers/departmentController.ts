@@ -4,10 +4,12 @@ import { ParsedQs } from "qs";
 
 
 export async function departmentGet(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id as string;
+    const id = req.params.id;
     try {
-        const department = await getDepartmentByIdPrisma(id);
-        return res.status(200).json(department);
+        const department = await getDepartmentByIdPrisma(+id);
+        if(department)
+            return res.status(200).json(department);
+        return res.status(404).json("NOT FOUND");
     } catch (err) {
         return next(err);
     }
@@ -56,7 +58,7 @@ export async function departmentUpdate(req: Request, res: Response, next: NextFu
 export async function departmentDelete(req: Request, res: Response, next: NextFunction) {
     try{
         const id = req.params.id;
-        const deleted = await deleteDepartmentPrisma(id as string);
+        const deleted = await deleteDepartmentPrisma(+id);
         return deleted ? res.status(200).json({"msg": "Department deleted with success !"}) : res.status(400).json({"msg": "Department not deleted !"})
     } catch (err) {
         return next(err);
