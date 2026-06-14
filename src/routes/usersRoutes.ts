@@ -5,7 +5,7 @@ import { userLoginValidator, userRegisterValidator } from "../middleware/userVal
 
 const router = Router();
 
-router.post("/register", authorize(["ADMIN"]), userRegisterValidator, userRegister);
+router.post("/register", userRegisterValidator, userRegister);
 router.post("/login", userLoginValidator, userLogin);
 
 
