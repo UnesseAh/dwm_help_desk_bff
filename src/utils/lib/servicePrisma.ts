@@ -15,14 +15,28 @@ export async function getServiceByIdPrisma(id: number) {
     return service;
 }
 
-export async function getListServicesPrisma(paginate = "false", limit?: number, offset?: number) {
-    const query: any = { include: { tickets: true}, orderBy: {name: "asc"}};
+export async function getListServicesPrisma(paginate: boolean = false, limit: number = 20, page: number = 1) {
+    const query: any = { include: { tickets: paginate}, orderBy: {name: "asc"}};
     if(paginate){
-        query.take = limit ?? 20;
-        query.skip = offset ?? 0;
+        const skip = (page - 1) * limit;
+        query.take = limit;
+        query.skip = skip;
     }
-    const services = await prisma.service.findMany(query);
-    return services;
+    const [services, totalRowCount] = await prisma.$transaction([
+        prisma.service.findMany(query),
+        prisma.service.count()
+
+    ]);
+    const pageCount = paginate ? Math.ceil(totalRowCount / limit) : 1;
+    return {
+        data: services,
+        meta: {
+            totalRowCount,
+            pageCount,
+            limit: paginate ? limit : totalRowCount,
+            page: paginate ? page : 1,
+        }
+    };
 }
 
 export async function createServicePrisma(info: HandledFields){
