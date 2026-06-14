@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userRouter from "./routes/usersRoutes";
 import departmentRouter from "./routes/departmentRoutes";
+import serviceRoutes from "./routes/serviceRoutes";
 import { authErrorHandler, generateErrorHandler, prismaErrorHandler } from "./errorHandling";
 
 
@@ -19,6 +20,8 @@ app.use(express.json());
 /** Users Routes */
 app.use("/api/users", userRouter);
 app.use("/api/departments" , departmentRouter);
+app.use("/api/services" , serviceRoutes);
+
 
 app.use(authErrorHandler, prismaErrorHandler, generateErrorHandler);
 
