@@ -16,18 +16,20 @@ export async function serviceGet(req: Request, res: Response, next: NextFunction
 }
 
 function parseServiceListQuery(query: ParsedQs){
-    const  {paginate, limit, offset}  = query;
+    const  {paginate, selectTickets,  limit, offset}  = query;
+    const paginateBool = paginate  === "true" ? true : false; 
+    const selectTicketsBool = selectTickets  === "true" ? true : false; 
     const limitNumber = limit ? parseInt(limit as string) : undefined;
     const offsetNUmber = offset ? parseInt(offset as string) : undefined;
 
-    return {paginate, limitNumber, offsetNUmber};
+    return {paginate: paginateBool, selectTickets: selectTicketsBool, limitNumber, offsetNUmber};
 
 }
 
 export async function serviceListGet(req: Request, res: Response, next: NextFunction) {
     try {
-        const {paginate, limitNumber, offsetNUmber} = parseServiceListQuery(req.query);
-        const services = await getListServicesPrisma(paginate as string, limitNumber, offsetNUmber);
+        const {paginate, selectTickets, limitNumber, offsetNUmber} = parseServiceListQuery(req.query);
+        const services = await getListServicesPrisma(paginate, selectTickets,  limitNumber, offsetNUmber);
         return res.status(200).json(services);
     } catch (err) {
         return next(err);
