@@ -44,6 +44,7 @@ model User {
   createdTickets  Ticket[]     @relation("ClientTickets")
   handledTickets  Ticket[]     @relation("AgentTickets")
   messages        Message[]
+  @@map("users")
 }
 
 model Department {
@@ -51,6 +52,7 @@ model Department {
   name     String    @unique
   users    User[]
   services Service[] 
+  @@map("departments")
 }
 
 model Service {
@@ -62,6 +64,8 @@ model Service {
   department   Department @relation(fields: [departmentId], references: [id])
 
   @@unique([name, departmentId]) 
+  @@map("services")
+
 }
 
 model Ticket {
@@ -86,6 +90,8 @@ model Ticket {
   service      Service        @relation(fields: [serviceId], references: [id])
 
   messages     Message[]
+  @@map("tickets")
+
 }
 
 model Message {
@@ -98,4 +104,6 @@ model Message {
 
   senderId  BigInt
   sender    User     @relation(fields: [senderId], references: [id])
+  @@map("messages")
+
 }
