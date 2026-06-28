@@ -1,16 +1,22 @@
-@userToken = <token>
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQG1haWwuY29tIiwicm9sZSI6IkFETUlOIn0sImlhdCI6MTc4MjY0MDAyMCwiZXhwIjoxNzgyNjQ3MjIwfQ.a3ScN9S6A7u_HgkCqjaaWrvuJzTsjeqeceH5uzdZl6Y
 
+###
+GET http://localhost:3000/api/users
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+
+###
 POST http://localhost:3000/api/users/register
 Content-Type: application/json
 
 {
     "user" : {
-        "name" : "user1",
+        "name" : "user2",
         "password": "123456",
-        "email": "user1@mail.com"
+        "email": "user2@mail.com"
     }
 }
-
 
 
 ### 
@@ -23,3 +29,39 @@ Content-Type: application/json
         "password": "123456"
     }
 }
+
+
+
+### 
+PUT  http://localhost:3000/api/users/update
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+    "user" : {
+       "id" : "8",
+        "info" : {
+            "departmentId" : 1,
+            "role": "USER"
+        }
+    }
+}
+
+
+### 
+PATCH  http://localhost:3000/api/users/toggleActivation
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+    "user" : {
+       "id" : "8"
+    }
+}
+
+
+### 
+GET  http://localhost:3000/api/users/stats
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+

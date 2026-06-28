@@ -36,6 +36,7 @@ model User {
   email           String       @unique
   passwordHash    String
   role            Role         @default(USER)
+  isActivated     Boolean      @default(false)
   createdAt       DateTime     @default(now())
   
   departmentId    BigInt?
