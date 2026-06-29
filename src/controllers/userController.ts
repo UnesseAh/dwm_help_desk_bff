@@ -71,7 +71,8 @@ export async function connectedUser(req: Request, res: Response, next: NextFunct
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-        return res.json(decoded);
+        const user = JSON.parse(decoded as string);
+        return res.json({user: { name: user.name, email: user.email, role: user.role }});
     } catch (error) {
         return res.status(401).json({
             error: 'Invalid token',
