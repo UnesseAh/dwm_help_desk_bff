@@ -1,7 +1,13 @@
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQG1haWwuY29tIiwicm9sZSI6IkFETUlOIn0sImlhdCI6MTc4MjY0MDAyMCwiZXhwIjoxNzgyNjQ3MjIwfQ.a3ScN9S6A7u_HgkCqjaaWrvuJzTsjeqeceH5uzdZl6Y
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQG1haWwuY29tIiwicm9sZSI6IkFETUlOIn0sImlhdCI6MTc4Mjc2MTYxNiwiZXhwIjoxNzgyNzY4ODE2fQ.dTbRRaDe2XjRsssgbPljEY3TckC3wKa94o1c4DFO5V4
 
 ###
 GET http://localhost:3000/api/users
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+
+###
+GET http://localhost:3000/api/users/me
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
