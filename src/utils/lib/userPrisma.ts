@@ -9,7 +9,7 @@ interface UpdatedFields {
     role?: Role;
 }
 
-interface QuerySearch{
+interface QuerySearch {
     name?: string;
     role?: string;
     departmentId?: number;
@@ -17,11 +17,26 @@ interface QuerySearch{
 }
 
 
-export async function getListUsersPrisma(quearySearch: QuerySearch, paginate: boolean, limit: number = 20, page: number = 1){
-     const query: any = { select: {id:true, name: true, email: true, department: true,
-       role: true, isActivated: true, createdAt: true, passwordHash: false}, orderBy: {name: "asc"}};
-    if(paginate){
-        const skip = (page  - 1) * limit;
+export async function getListUsersPrisma(quearySearch: QuerySearch, paginate: boolean, limit: number = 20, page: number = 1) {
+    const query: any = {
+        select: {
+            id: true, name: true, email: true, service: {
+                select: {
+                    id: true,
+                    name: true,
+                    department: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            },
+            role: true, isActivated: true, createdAt: true, passwordHash: false
+        }, orderBy: { name: "asc" }
+    };
+    if (paginate) {
+        const skip = (page - 1) * limit;
         query.take = limit;
         query.skip = skip;
     }
@@ -72,7 +87,7 @@ export async function getUserByIdPrisma(id: number) {
 
 export async function updateUserPrisma(id: number, info: UpdatedFields) {
     if (!id) return null;
-    const user = await prisma.user.update({ select:{id: true, name: true, isActivated: true}, where: { id }, data: info });
+    const user = await prisma.user.update({ select: { id: true, name: true, isActivated: true }, where: { id }, data: info });
     return user;
 }
 
@@ -91,7 +106,7 @@ export async function toggleActivationUserPrisma(id: number) {
     if (!currentUser) return null;
 
     return prisma.user.update({
-        select:{id: true, name: true, isActivated: true},
+        select: { id: true, name: true, isActivated: true },
         where: { id },
         data: {
             isActivated: !currentUser.isActivated,
@@ -99,17 +114,17 @@ export async function toggleActivationUserPrisma(id: number) {
     });
 }
 
-export async function statsUsersByRolePrisma(){
-   const stats = await prisma.user.groupBy({
-    by: ["role", "isActivated"],
-    _count: {
-        id: true
-    }
-   });
+export async function statsUsersByRolePrisma() {
+    const stats = await prisma.user.groupBy({
+        by: ["role", "isActivated"],
+        _count: {
+            id: true
+        }
+    });
 
-   let totalActivated = 0;
-   let totalNotActivated = 0;
-   const dataRolesStats = stats.reduce((acc, item) => {
+    let totalActivated = 0;
+    let totalNotActivated = 0;
+    const dataRolesStats = stats.reduce((acc, item) => {
         const role = item.role;
         if (!acc[role]) {
             acc[role] = {
@@ -119,21 +134,21 @@ export async function statsUsersByRolePrisma(){
             };
         }
 
-        if(item.isActivated){
+        if (item.isActivated) {
             acc[role].activated = item._count.id;
-            totalActivated +=  item._count.id;
-        }else{
+            totalActivated += item._count.id;
+        } else {
             acc[role].notActivated = item._count.id;
             totalNotActivated += item._count.id;
         }
-        acc[role].total = acc[role].activated + acc[role].notActivated ;
+        acc[role].total = acc[role].activated + acc[role].notActivated;
         return acc;
-   }, {} as Record<string, { activated: number; notActivated: number , total: number}>);
+    }, {} as Record<string, { activated: number; notActivated: number, total: number }>);
 
-   dataRolesStats['ALL'] = {
+    dataRolesStats['ALL'] = {
         activated: totalActivated,
         notActivated: totalNotActivated,
         total: totalActivated + totalNotActivated
-   }
-   return dataRolesStats;
+    }
+    return dataRolesStats;
 }
