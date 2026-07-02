@@ -5,20 +5,20 @@ import { prisma } from "./prisma";
 interface UpdatedFields {
     name?: string;
     email?: string;
-    departmentId?: number;
+    serviceId?: number;
     role?: Role;
 }
 
 interface QuerySearch{
     name?: string;
     role?: string;
-    departmentId?: number;
+    serviceId?: number;
     isActivated?: boolean;
 }
 
 
 export async function getListUsersPrisma(quearySearch: QuerySearch, paginate: boolean, limit: number = 20, page: number = 1){
-     const query: any = { select: {id:true, name: true, email: true, department: true,
+     const query: any = { select: {id:true, name: true, email: true, service: true,
        role: true, isActivated: true, createdAt: true, passwordHash: false}, orderBy: {name: "asc"}};
     if(paginate){
         const skip = (page  - 1) * limit;

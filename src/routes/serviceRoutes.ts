@@ -7,7 +7,7 @@ import serviceUpdateValidator from "../middleware/serviceValidator.ts/serviceUpd
 const router = Router();
 
 router.get("/:id", authorize(["ADMIN"]), serviceGet);
-router.get("/", authorize(["ADMIN"]), serviceListGet);
+router.get("/", authorize([]), serviceListGet);
 router.post("/", authorize(["ADMIN"]), serviceStoreValidator, serviceCreate);
 router.put("/", authorize(["ADMIN"]), serviceUpdateValidator, serviceUpdate);
 router.delete("/:id", authorize(["ADMIN"]), serviceDelete);

@@ -54,7 +54,7 @@ export async function userLogin(req: Request, res: Response, next: NextFunction)
 
         if (!compareWithHash(password, user.passwordHash)) return res.sendStatus(403);
         const token = await createUserToken(user);
-        return res.status(201).json({ token: token, user: { name: user.name, email: user.email, department: user.departmentId, role: user.role } });
+        return res.status(201).json({ token: token, user: { name: user.name, email: user.email, service: user.serviceId, role: user.role } });
     } catch (error) {
         return next(error);
     }

@@ -16,11 +16,14 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+import ticketRoutes from "./routes/ticketRoutes";
+import { seedData } from "./seed";
 
 /** Users Routes */
 app.use("/api/users", userRouter);
 app.use("/api/departments" , departmentRouter);
 app.use("/api/services" , serviceRoutes);
+app.use("/api/tickets", ticketRoutes);
 
 
 app.use(authErrorHandler, prismaErrorHandler, generateErrorHandler);
