@@ -1,82 +1,183 @@
-# IT Helpdesk BFF (Backend For Frontend)
+# IT Helpdesk Backend
 
-This is a Node.js & Express API backend built with TypeScript and Prisma ORM for the IT Helpdesk application.
+Express, TypeScript, Prisma, and PostgreSQL backend API for the IT Helpdesk application.
 
 ## Prerequisites
 
-If you have a brand-new machine and haven't installed anything, you will need the following software installed:
+Install these before starting:
 
-1. **Node.js**: The JavaScript runtime environment. 
-   - Download the **LTS (Long Term Support)** version from the [official Node.js website](https://nodejs.org/).
-   - Verifying installation (run in terminal): `node -v` and `npm -v`
+- Node.js LTS
+- npm
+- PostgreSQL
 
-2. **PostgreSQL**: The relational database used by this project.
-   - **Windows/Mac:** Download from the [PostgreSQL website](https://www.postgresql.org/download/). During installation, remember the password you set for the `postgres` user.
-   - **Alternative (Docker):** If you prefer Docker, you can run `docker run --name helpdesk-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres`
+Check that Node and npm are installed:
 
-## Getting Started
+```bash
+node -v
+npm -v
+```
 
-Follow these steps from scratch to get your development environment running:
+## Setup From Scratch
 
 ### 1. Install Dependencies
 
-Open your terminal, navigate to the root directory of this project (`dwm_help_desk_bff`), and run:
+From the backend folder:
 
 ```bash
+cd dwm_help_desk_bff
 npm install
 ```
 
-### 2. Configure Environment Variables
+### 2. Create the Database
 
-Create a new file named `.env` in the root of the project (if it doesn't already exist) and add the following contents:
+Create a PostgreSQL database for the project.
+
+Example database name:
+
+```text
+help_desk_bff
+```
+
+You can create it using pgAdmin, DBeaver, TablePlus, or the PostgreSQL command line.
+
+### 3. Configure Environment Variables
+
+Create a `.env` file in the `dwm_help_desk_bff` folder:
 
 ```env
-# Database connection string
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/help_desk_bff?schema=public"
-
-# The port your server will run on (optional, defaults to 5000)
+JWT_SECRET="change_this_secret_for_local_development"
 PORT=5000
 ```
-> **Note:** If you set a different password during your PostgreSQL installation, replace the second `postgres` in the URL with your password (format: `postgresql://USER:PASSWORD@localhost:5432/DB_NAME`).
 
-### 3. Setup the Database
+Update the database URL if your PostgreSQL username, password, host, port, or database name is different.
 
-Before running the application, make sure your PostgreSQL server is running. You will need to create an empty database named `help_desk_bff` (you can do this via pgAdmin or a database tool like DBeaver/TablePlus).
+### 4. Prepare Prisma and the Database
 
-Once the database is created, run the following commands in your terminal to apply the schema and populate the database with initial data:
+Generate the Prisma client:
 
 ```bash
-# Push the Prisma schema to your database
 npx prisma generate
-npx prisma db push
+```
 
-# Run the seeder to populate default departments and services
+Apply the database migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+Seed the database with initial data:
+
+```bash
 npx prisma db seed
 ```
 
-### 4. Running the Application
+### 5. Start the Backend
 
-Now you are ready to start the server!
-
-**For Development (Auto-reloads on file changes):**
 ```bash
 npm run dev
 ```
-The server will start at `http://localhost:5000`.
 
-**For Production:**
+The API will run at:
+
+```text
+http://localhost:5000/api
+```
+
+Health check:
+
+```text
+http://localhost:5000/
+```
+
+## Running the Full Project
+
+Use two terminals.
+
+Terminal 1, backend:
+
 ```bash
-# Compile TypeScript to JavaScript
-npm run build
+cd dwm_help_desk_bff
+npm run dev
+```
 
-# Start the compiled server
-npm start
+Terminal 2, frontend:
+
+```bash
+cd dwm_help_desk
+npm run dev
+```
+
+The frontend `.env` should point to:
+
+```env
+VITE_APP_API_BASE_URL=http://localhost:5000/api
 ```
 
 ## Available Scripts
 
-- `npm run dev` - Starts the development server using `tsx`.
-- `npm run build` - Compiles the TypeScript source code to the `dist` folder.
-- `npm start` - Runs the compiled application.
-- `npx prisma studio` - Opens a visual database browser in your web browser.
-- `npx prisma validate` - Validates the Prisma schema syntax.
+```bash
+npm run dev
+```
+
+Starts the backend in development mode with auto-reload.
+
+```bash
+npm run build
+```
+
+Compiles TypeScript into the `dist` folder.
+
+```bash
+npm start
+```
+
+Runs the compiled backend from `dist`.
+
+## Useful Prisma Commands
+
+```bash
+npx prisma generate
+```
+
+Generates the Prisma client.
+
+```bash
+npx prisma migrate dev
+```
+
+Applies migrations in development.
+
+```bash
+npx prisma db seed
+```
+
+Runs the database seed script.
+
+```bash
+npx prisma studio
+```
+
+Opens Prisma Studio to browse the database.
+
+## Common Issues
+
+### Backend Cannot Connect to Database
+
+Check that:
+
+- PostgreSQL is running.
+- The database exists.
+- `DATABASE_URL` has the correct username, password, port, and database name.
+
+### Login or Protected Routes Fail
+
+Make sure `JWT_SECRET` exists in `.env`, then restart the backend.
+
+### Frontend Cannot Reach the API
+
+Make sure:
+
+- The backend is running on port `5000`.
+- The frontend `.env` uses `VITE_APP_API_BASE_URL=http://localhost:5000/api`.
+- The frontend was restarted after changing `.env`.
