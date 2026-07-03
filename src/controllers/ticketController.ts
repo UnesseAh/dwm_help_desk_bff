@@ -1,5 +1,38 @@
 import { NextFunction, Request, Response } from "express";
+import { TicketStatus } from "../generated/enums";
 import { prisma } from "../utils/lib/prisma";
+
+const ticketDetailsInclude = {
+    client: { select: { id: true, name: true, email: true } },
+    agent: { select: { id: true, name: true, email: true } },
+    service: {
+        select: {
+            id: true,
+            name: true,
+            department: { select: { id: true, name: true } },
+        },
+    },
+    messages: {
+        orderBy: { createdAt: "asc" as const },
+        include: { sender: { select: { id: true, name: true, role: true } } },
+    },
+};
+
+async function getAccessibleTicket(ticketId: string, user: any) {
+    const ticket = await prisma.ticket.findUnique({
+        where: { id: BigInt(ticketId) },
+        include: ticketDetailsInclude,
+    });
+
+    if (!ticket) return null;
+
+    const isAdmin = user.role === "ADMIN";
+    const isAssignedServiceAgent =
+        user.role === "AGENT" && user.serviceId && ticket.serviceId.toString() === user.serviceId.toString();
+    const isTicketClient = user.role === "USER" && ticket.clientId.toString() === user.id.toString();
+
+    return isAdmin || isAssignedServiceAgent || isTicketClient ? ticket : false;
+}
 
 export async function ticketListGet(req: Request, res: Response, next: NextFunction) {
     try {
@@ -35,6 +68,93 @@ export async function ticketListGet(req: Request, res: Response, next: NextFunct
         }
 
         return res.status(200).json(tickets);
+    } catch (err) {
+        return next(err);
+    }
+}
+
+export async function ticketGet(req: Request, res: Response, next: NextFunction) {
+    try {
+        const user = (req as any).user?.user;
+        if (!user) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const ticketId = String(req.params.id);
+        const ticket = await getAccessibleTicket(ticketId, user);
+        if (ticket === null) return res.status(404).json({ error: "Ticket not found" });
+        if (ticket === false) return res.status(403).json({ error: "Forbidden" });
+
+        return res.status(200).json(ticket);
+    } catch (err) {
+        return next(err);
+    }
+}
+
+export async function ticketStatusUpdate(req: Request, res: Response, next: NextFunction) {
+    try {
+        const user = (req as any).user?.user;
+        if (!user) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        if (user.role !== "AGENT" && user.role !== "ADMIN") {
+            return res.status(403).json({ error: "Only agents and admins can change ticket status" });
+        }
+
+        const ticketId = String(req.params.id);
+        const { status } = req.body as { status?: string };
+        const validStatuses = Object.values(TicketStatus);
+        if (!status || !validStatuses.includes(status as TicketStatus)) {
+            return res.status(400).json({ error: "Invalid status" });
+        }
+
+        const ticket = await getAccessibleTicket(ticketId, user);
+        if (ticket === null) return res.status(404).json({ error: "Ticket not found" });
+        if (ticket === false) return res.status(403).json({ error: "Forbidden" });
+
+        const updatedTicket = await prisma.ticket.update({
+            where: { id: BigInt(ticketId) },
+            data: {
+                status: status as TicketStatus,
+                ...(user.role === "AGENT" ? { agentId: BigInt(user.id) } : {}),
+            },
+            include: ticketDetailsInclude,
+        });
+
+        return res.status(200).json(updatedTicket);
+    } catch (err) {
+        return next(err);
+    }
+}
+
+export async function ticketMessageCreate(req: Request, res: Response, next: NextFunction) {
+    try {
+        const user = (req as any).user?.user;
+        if (!user) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const ticketId = String(req.params.id);
+        const { content } = req.body as { content?: string };
+        if (!content || !content.trim()) {
+            return res.status(400).json({ error: "Message is required" });
+        }
+
+        const ticket = await getAccessibleTicket(ticketId, user);
+        if (ticket === null) return res.status(404).json({ error: "Ticket not found" });
+        if (ticket === false) return res.status(403).json({ error: "Forbidden" });
+
+        const message = await prisma.message.create({
+            data: {
+                content: content.trim(),
+                ticketId: BigInt(ticketId),
+                senderId: BigInt(user.id),
+            },
+            include: { sender: { select: { id: true, name: true, role: true } } },
+        });
+
+        return res.status(201).json(message);
     } catch (err) {
         return next(err);
     }
