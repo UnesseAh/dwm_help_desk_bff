@@ -26,7 +26,13 @@ export async function getListUsersPrisma(
       id: true,
       name: true,
       email: true,
-      service: true,
+      service: {
+        select: {
+            id: true,
+            name: true,
+            department: true
+        }
+      },
       role: true,
       isActivated: true,
       createdAt: true,

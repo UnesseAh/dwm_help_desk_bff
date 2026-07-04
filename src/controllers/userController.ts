@@ -93,6 +93,7 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
     }
 }
 
+// this function for change password of current connected user
 export async function changePasswordUser(req: Request, res: Response, next: NextFunction) {
     const { id, oldPassword, newPassword } = req.body.user;
 
@@ -113,6 +114,24 @@ export async function changePasswordUser(req: Request, res: Response, next: Next
         return next(error);
     }
 }
+
+// this function for reset password by admin to any user, dosn't neet old password
+// we can optimise those functions
+export async function resetPasswordUser(req: Request, res: Response, next: NextFunction) {
+    const { id, newPassword } = req.body.user;
+    try {
+        const user = await getUserByIdPrisma(id);
+        if (!user) return res.sendStatus(404);
+        const hashed = hashPassword(newPassword);
+        const userPasswordUpdated = await changePasswordUserPrisma(id, hashed);
+        if (!userPasswordUpdated) return res.json({ "error": "unable to reset password !" });
+        return res.status(201).json({ "success": "password reseted with success" });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+
 
 export async function toggleActivationUser(req: Request, res: Response, next: NextFunction) {
     const { id } = req.body.user;
