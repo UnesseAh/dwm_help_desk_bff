@@ -11,7 +11,6 @@ import { authenticate } from "../middleware/auth/authenticator";
 
 const router = Router();
 
-// Assuming authenticate middleware populates req.user
 router.use(authenticate);
 
 router.get("/", authorize(["ADMIN", "AGENT", "USER"]), ticketListGet);
@@ -19,5 +18,6 @@ router.post("/", authorize(["USER", "AGENT", "ADMIN"]), ticketCreate);
 router.get("/:id", authorize(["ADMIN", "AGENT", "USER"]), ticketGet);
 router.patch("/:id/status", authorize(["ADMIN", "AGENT"]), ticketStatusUpdate);
 router.post("/:id/messages", authorize(["ADMIN", "AGENT", "USER"]), ticketMessageCreate);
+
 
 export default router;

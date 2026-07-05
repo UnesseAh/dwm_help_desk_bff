@@ -1,0 +1,7 @@
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMSIsInVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQG1haWwuY29tIiwicm9sZSI6IkFETUlOIiwic2VydmljZUlkIjoiMSJ9LCJpYXQiOjE3ODMyNDM3MTYsImV4cCI6MTc4MzI1MDkxNn0.mMSoGV3gAyaRa0JQevvs7Jiwm_Cp9ppBf2kxBc3ZKR4
+
+
+### 
+GET http://localhost:3000/api/stats/tickets?colStats=priority
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
