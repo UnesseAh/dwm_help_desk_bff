@@ -3,6 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userRouter from "./routes/usersRoutes";
 import departmentRouter from "./routes/departmentRoutes";
+import serviceRoutes from "./routes/serviceRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
+
 import { authErrorHandler, generateErrorHandler, prismaErrorHandler } from "./errorHandling";
 
 
@@ -15,10 +18,17 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+import ticketRoutes from "./routes/ticketRoutes";
+import { seedData } from "./seed";
 
 /** Users Routes */
 app.use("/api/users", userRouter);
 app.use("/api/departments" , departmentRouter);
+app.use("/api/services" , serviceRoutes);
+app.use("/api/tickets", ticketRoutes);
+app.use("/api/stats", dashboardRoutes);
+
+
 
 app.use(authErrorHandler, prismaErrorHandler, generateErrorHandler);
 

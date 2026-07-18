@@ -4,6 +4,10 @@ import { Request, Response, NextFunction } from 'express';
 
 export default function authorize(roles: string[] = []) {
   return (req: any, res: Response, next: NextFunction) => {
+    // If no roles are specified, the route is public – no token needed.
+    if (roles.length === 0) {
+      return next();
+    }
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {

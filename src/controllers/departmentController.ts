@@ -16,18 +16,21 @@ export async function departmentGet(req: Request, res: Response, next: NextFunct
 }
 
 function parseDepartmentListQuery(query: ParsedQs){
-    const  {paginate, limit, offset}  = query;
-    const limitNumber = limit ? parseInt(limit as string) : undefined;
-    const offsetNUmber = offset ? parseInt(offset as string) : undefined;
+    const  {paginate, limit, page}  = query;
 
-    return {paginate, limitNumber, offsetNUmber};
+    const isPaginated = paginate === "true";
+
+    const limitNumber = limit ? parseInt(limit as string) : undefined;
+    const pageNumber = page ? parseInt(page as string) : undefined;
+
+    return {paginate: isPaginated, limitNumber, pageNumber};
 
 }
 
 export async function departmentListGet(req: Request, res: Response, next: NextFunction) {
     try {
-        const {paginate, limitNumber, offsetNUmber} = parseDepartmentListQuery(req.query);
-        const departments = await getListDepatmentsPrisma(paginate as string, limitNumber, offsetNUmber);
+        const {paginate, pageNumber, limitNumber} = parseDepartmentListQuery(req.query);
+        const departments = await getListDepatmentsPrisma(paginate, limitNumber, pageNumber);
         return res.status(200).json(departments);
     } catch (err) {
         return next(err);

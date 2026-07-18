@@ -14,14 +14,28 @@ export async function getDepartmentByIdPrisma(id: number) {
     return department;
 }
 
-export async function getListDepatmentsPrisma(paginate = "false", limit?: number, offset?: number) {
-    const query: any = { include: { services: true}, orderBy: {name: "asc"}};
+export async function getListDepatmentsPrisma(paginate: boolean = false, limit: number = 20, page: number = 1) {
+    const query: any = { include: { services: paginate}, orderBy: {name: "asc"}};
     if(paginate){
-        query.take = limit ?? 20;
-        query.skip = offset ?? 0;
+        const skip = (page  - 1) * limit;
+        query.take = limit;
+        query.skip = skip;
     }
-    const departments = await prisma.department.findMany(query);
-    return departments;
+    const [departments, totalRowCount] = await prisma.$transaction([
+        prisma.department.findMany(query),
+        prisma.department.count()
+    ]);
+    const pageCount = paginate ? Math.ceil(totalRowCount / limit) : 1;
+
+    return {
+        data: departments,
+        meta: {
+            totalRowCount,
+            pageCount,
+            limit: paginate ? limit : totalRowCount,
+            page: paginate ? page : 1,
+        }
+    };
 }
 
 export async function createDepartmentPrisma(name: string){

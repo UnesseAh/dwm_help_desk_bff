@@ -1,0 +1,45 @@
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQG1haWwuY29tIiwicm9sZSI6IkFETUlOIn0sImlhdCI6MTc4MTQzMDQ1NCwiZXhwIjoxNzgxNDM3NjU0fQ.7OOEUh_2PfK30-74ga-4e8j9k4rccPIp2Y-KXjSk1x4
+
+### 
+GET http://localhost:3000/api/services
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+
+###
+GET http://localhost:3000/api/services/1
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### 
+POST http://localhost:3000/api/services/
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+    "service" : {
+        "name" : "Network +",
+        "departmentId" : 3
+    }
+}
+
+
+### 
+PUT http://localhost:3000/api/services/
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+    "service" : {
+        "id" : "2",
+        "info" : {
+            "departmentId" : 3
+        }
+    }
+}
+
+###
+DELETE http://localhost:3000/api/services/2
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+

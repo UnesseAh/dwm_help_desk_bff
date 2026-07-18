@@ -1,6 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import dotenv from "dotenv";
+import { hashPassword } from "../src/utils/hashPassword";
+import { Role } from "../src/generated/enums";
 
 dotenv.config();
 
@@ -86,6 +88,55 @@ async function main() {
       }
     }
   }
+
+  // Seed Users
+  const adminPassword = hashPassword("admin123");
+  await prisma.user.upsert({
+    where: { email: "admin@example.com" },
+    update: {},
+    create: {
+      name: "Admin User",
+      email: "admin@example.com",
+      passwordHash: adminPassword,
+      role: Role.ADMIN,
+      isActivated: true,
+    },
+  });
+
+  const clientPassword = hashPassword("client123");
+  await prisma.user.upsert({
+    where: { email: "client@example.com" },
+    update: {},
+    create: {
+      name: "Client User",
+      email: "client@example.com",
+      passwordHash: clientPassword,
+      role: Role.USER,
+      isActivated: true,
+    },
+  });
+
+  // Get a service to assign to the agent
+  const itService = await prisma.service.findFirst({
+    where: { name: "Workstation & Hardware Faults" }
+  });
+
+  if (itService) {
+    const agentPassword = hashPassword("agent123");
+    await prisma.user.upsert({
+      where: { email: "agent@example.com" },
+      update: {},
+      create: {
+        name: "Agent User",
+        email: "agent@example.com",
+        passwordHash: agentPassword,
+        role: Role.AGENT,
+        isActivated: true,
+        serviceId: itService.id
+      },
+    });
+  }
+
 }
 
 main()

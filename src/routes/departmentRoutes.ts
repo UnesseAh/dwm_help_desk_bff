@@ -7,7 +7,7 @@ import departmentUpdateValidator from "../middleware/departmentValidator/departm
 const router = Router();
 
 router.get("/:id", authorize(["ADMIN"]), departmentGet);
-router.get("/", authorize(["ADMIN"]), departmentListGet);
+router.get("/", authorize([]), departmentListGet);
 router.post("/", authorize(["ADMIN"]), departmentStoreValidator, departmentCreate);
 router.put("/", authorize(["ADMIN"]), departmentUpdateValidator, departmentUpdate);
 router.delete("/:id", authorize(["ADMIN"]), departmentDelete);

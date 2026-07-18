@@ -1,4 +1,7 @@
-@userToken = <token>
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidXNlcjEiLCJlbWFpbCI6InVzZXIxQG1haWwuY29tIiwicm9sZSI6IkFETUlOIn0sImlhdCI6MTc4MTQzNzczMiwiZXhwIjoxNzgxNDQ0OTMyfQ.acAqpQBjIr1-RZereg5b41J5iwuhLYTzzu_tnhlqVJE
+
+###
+GET http://localhost:3000/api/departments
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
@@ -15,7 +18,7 @@ Authorization: Bearer {{userToken}}
 
 {
     "department" : {
-        "name" : "Developpment"
+        "name" : "Networking"
     }
 }
 
